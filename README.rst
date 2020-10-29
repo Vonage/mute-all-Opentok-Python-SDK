@@ -476,7 +476,7 @@ repository and follow the Walkthroughs:
 Documentation
 -------------
 
-Reference documentation is available at <http://www.tokbox.com/opentok/libraries/server/python/reference/index.html>.
+Reference documentation is available at http://www.tokbox.com/opentok/libraries/server/python/reference/index.html.
 
 Requirements
 ------------
@@ -509,7 +509,7 @@ This version of the SDK includes support for working with OpenTok archives.
 The OpenTok.create_session() method now includes a media_mode parameter, instead of a p2p parameter.
 
 For details, see the reference documentation at
-<http://www.tokbox.com/opentok/libraries/server/python/reference/index.html>.
+http://www.tokbox.com/opentok/libraries/server/python/reference/index.html.
 
 Development and Contributing
 ----------------------------
