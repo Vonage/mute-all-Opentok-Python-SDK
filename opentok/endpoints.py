@@ -67,3 +67,13 @@ class Endpoints(object):
         if layout:
             url = url + '/layout'
         return url
+
+    def force_mute_url(self, session_id, stream_id=None):
+        """ this method returns the url to mute connection or the whole session """
+        url = self.api_url + '/v2/project/' + self.api_key + '/session/' + session_id
+
+        if stream_id:
+            url += '/stream/' + stream_id
+
+        url += '/mute'
+        return url
