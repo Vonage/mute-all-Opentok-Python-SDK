@@ -35,6 +35,7 @@ from .exceptions import (
     SignalingError,
     GetStreamError,
     ForceDisconnectError,
+    ForceMuteError,
     SipDialError,
     SetStreamClassError,
     BroadcastError
@@ -48,7 +49,7 @@ class Roles(Enum):
     """A publisher can publish streams, subscribe to streams, and signal"""
     moderator =  u('moderator')
     """In addition to the privileges granted to a publisher, in clients using the OpenTok.js 2.2
-    library, a moderator can call the `forceUnpublish()` and `forceDisconnect()` method of the
+    library, a moderator can call the `forceMute()`, `forceMuteAll()`, `forceUnpublish()` and `forceDisconnect()` method of the
     Session object.
     """
 
@@ -600,6 +601,54 @@ class OpenTok(object):
             raise AuthError('You are not authorized to forceDisconnect, check your authentication credentials.')
         elif response.status_code == 404:
             raise ForceDisconnectError('The client specified by the connectionId property is not connected to the session.')
+        else:
+            raise RequestError('An unexpected error occurred', response.status_code)
+
+    def force_mute(self, session_id, stream_id):
+        """
+        Sends a request to mute a client of an OpenTok session
+
+        :param String session_id: The session ID of the OpenTok session from which the
+        client will be muted
+
+        :param String stream_id: The stream ID of the stream that will be muted
+        """
+        self._handle_force_mute(session_id, stream_id)
+
+    def force_mute_all(self, session_id, options=None):
+        """
+        Sends a request to mute a client of an OpenTok session
+
+        :param String session_id: The session ID of the OpenTok session from which the
+        client will be muted
+
+        :param Dictionary options optional: additional options with the following properties:
+
+            Array 'excluded': An array of stream_id to exclude from the mute if
+        """
+        self._handle_force_mute(session_id, None, options)
+
+    def _handle_force_mute(self, session_id, stream_id, options=None):
+        endpoint = self.endpoints.force_mute_url(session_id, stream_id)
+
+        data = None
+        if options is not None:
+            payload = {'excluded': options.get('excluded', [])}
+            data = json.dumps(payload)
+
+        response = requests.post(
+            endpoint, headers=self.json_headers(), data=data, proxies=self.proxies, timeout=self.timeout
+        )
+
+        if response.status_code == 204:
+            pass
+        elif response.status_code == 400:
+            raise ForceMuteError('One of the arguments - sessionId, connectionId or options - is invalid.')
+        elif response.status_code == 403:
+            raise AuthError('You are not authorized to forceDisconnect, check your authentication credentials.')
+        elif response.status_code == 404:
+            raise ForceMuteError(
+                'The client specified by the connectionId property is not connected to the session.')
         else:
             raise RequestError('An unexpected error occurred', response.status_code)
 

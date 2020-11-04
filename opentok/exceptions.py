@@ -49,6 +49,14 @@ class ForceDisconnectError(OpenTokException):
     """
     pass
 
+class ForceMuteError(OpenTokException):
+    """
+    Indicates that there was a force mute specific problem:
+    One of the arguments is invalid or the client specified by the connectionId property
+    is not connected to the session
+    """
+    pass
+
 class SipDialError(OpenTokException):
     """
     Indicates that there was a SIP dial specific problem:

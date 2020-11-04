@@ -5,6 +5,7 @@ from .exceptions import (
     OpenTokException,
     AuthError,
     ForceDisconnectError,
+    ForceMuteError,
     ArchiveError,
     SetStreamClassError,
     BroadcastError
