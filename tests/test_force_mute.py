@@ -16,9 +16,7 @@ class OpenTokForceMuteTest(unittest.TestCase):
         self.opentok = OpenTok(self.api_key, self.api_secret)
         self.session_id = u('SESSIONID')
         self.stream_id = u('STREAMID')
-        self.options = {
-            'exclude': [self.stream_id]
-        }
+        self.excluded_stream_ids = [self.stream_id]
 
     @httpretty.activate
     def test_force_mute(self):
@@ -103,7 +101,7 @@ class OpenTokForceMuteTest(unittest.TestCase):
             content_type=u('application/json')
         )
 
-        self.opentok.force_mute_all(self.session_id, self.options)
+        self.opentok.force_mute_all(self.session_id, self.excluded_stream_ids)
 
         validate_jwt_header(self, httpretty.last_request().headers[u('x-opentok-auth')])
         expect(httpretty.last_request().headers[u('user-agent')]).to(contain(u('OpenTok-Python-SDK/') + __version__))
@@ -131,7 +129,7 @@ class OpenTokForceMuteTest(unittest.TestCase):
             ForceMuteError,
             self.opentok.force_mute_all,
             self.session_id,
-            self.options
+            self.excluded_stream_ids
         )
 
     @httpretty.activate
@@ -156,5 +154,5 @@ class OpenTokForceMuteTest(unittest.TestCase):
             AuthError,
             self.opentok.force_mute_all,
             self.session_id,
-            self.options
+            self.excluded_stream_ids
         )

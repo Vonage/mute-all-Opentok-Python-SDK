@@ -615,25 +615,23 @@ class OpenTok(object):
         """
         self._handle_force_mute(session_id, stream_id)
 
-    def force_mute_all(self, session_id, options=None):
+    def force_mute_all(self, session_id, excluded_stream_ids=[]):
         """
         Sends a request to mute a client of an OpenTok session
 
         :param String session_id: The session ID of the OpenTok session from which the
         client will be muted
 
-        :param Dictionary options optional: additional options with the following properties:
-
-            Array 'excluded': An array of stream_id to exclude from the mute if
+        :param List excluded_stream_ids optional: An array of stream_id to exclude from the mute
         """
-        self._handle_force_mute(session_id, None, options)
+        self._handle_force_mute(session_id, None, excluded_stream_ids)
 
-    def _handle_force_mute(self, session_id, stream_id, options=None):
+    def _handle_force_mute(self, session_id, stream_id, excluded_stream_ids=None):
         endpoint = self.endpoints.force_mute_url(session_id, stream_id)
 
         data = None
-        if options is not None:
-            payload = {'excluded': options.get('excluded', [])}
+        if excluded_stream_ids is not None:
+            payload = {'exclude': excluded_stream_ids}
             data = json.dumps(payload)
 
         response = requests.post(
@@ -643,7 +641,7 @@ class OpenTok(object):
         if response.status_code == 204:
             pass
         elif response.status_code == 400:
-            raise ForceMuteError('One of the arguments - sessionId, connectionId or options - is invalid.')
+            raise ForceMuteError('One of the arguments - sessionId, connectionId or excluded_stream_ids - is invalid.')
         elif response.status_code == 403:
             raise AuthError('You are not authorized to forceDisconnect, check your authentication credentials.')
         elif response.status_code == 404:
